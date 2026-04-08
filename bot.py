@@ -8,7 +8,7 @@ COMMENT_TEXT = """Не забывайте комментить и ставить
 Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁"""
 
 # ФОТО ИЗ ФАЙЛА (положите image.jpg в ту же папку, что и bot.py)
-PHOTO_FILE = InputFile("image.jpg")
+PHOTO_FILE = FSInputFile("image.jpg")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
