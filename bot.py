@@ -1,11 +1,29 @@
 import asyncio
 from aiogram import Bot, Dispatcher, types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InputFile
 
 TOKEN = "8683122770:AAEUMZjVAbG2Ray3Fv4FHWOK8jn3WLtJrpA"
-COMMENT_TEXT = "🔥 Спасибо за пост!"
+COMMENT_TEXT = """Не забывайте комментить и ставить реакции, ведь так вы повышаете шанс забрать халявного мишку 🤍
+
+Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁"""
+
+# ФОТО ИЗ ФАЙЛА (положите image.jpg в ту же папку, что и bot.py)
+PHOTO_FILE = InputFile("image.jpg")
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
+
+# Создаём кнопки
+keyboard = InlineKeyboardMarkup(inline_keyboard=[
+    [InlineKeyboardButton(text="🎁 Повышенный приз", url="https://t.me/DosikGIFTS/11423")],
+    [InlineKeyboardButton(text="⭐ Звезды от Досика", url="https://t.me/Dosik_stars_bot")],
+    [InlineKeyboardButton(text="📺 Наш твич", url="https://www.twitch.tv/")],
+    [InlineKeyboardButton(text="💬 Наш чатик", url="https://t.me/chatik_DOSIK")],
+])
+
+# Ссылки на эмодзи и авки
+EMOJI_LINK = "https://t.me/addemoji/DOSIK_emoji"
+AVATAR_LINK = "https://t.me/EMOJI_DOSIK"
 
 @dp.message()
 async def auto_comment(message: types.Message):
@@ -18,8 +36,18 @@ async def auto_comment(message: types.Message):
         print(f"⏩ Пропустил комментарий от {message.from_user.first_name}")
         return
     
-    # Иначе - это новый пост, отвечаем
-    await message.reply(COMMENT_TEXT)
+    # Формируем текст со ссылками
+    full_text = f"""{COMMENT_TEXT}
+
+[Эмодзи]({EMOJI_LINK}) и [авы]({AVATAR_LINK}) — подписывайтесь, чтобы не пропустить раздачи 🎀"""
+    
+    # Отправляем ФОТО + текст + кнопки
+    await message.reply_photo(
+        photo=PHOTO_FILE,
+        caption=full_text,
+        parse_mode="Markdown",
+        reply_markup=keyboard
+    )
     print(f"✅ Ответил на пост от {message.from_user.first_name}")
 
 async def main():
