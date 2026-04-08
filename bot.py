@@ -1,14 +1,14 @@
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.types import BufferedInputFile  # <-- Импортируем новый класс
+from aiogram.types import BufferedInputFile
 
 TOKEN = "8683122770:AAEUMZjVAbG2Ray3Fv4FHWOK8jn3WLtJrpA"
 COMMENT_TEXT = """Не забывайте комментить и ставить реакции, ведь так вы повышаете шанс забрать халявного мишку 🤍
 
 Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁"""
 
-# ЗАГРУЖАЕМ ФОТО КАК БАЙТОВЫЙ МАССИВ (РАБОТАЕТ ВСЕГДА)
+# Загружаем фото
 try:
     with open("image.jpg", "rb") as photo_file:
         PHOTO_BYTES = photo_file.read()
@@ -21,7 +21,7 @@ except FileNotFoundError:
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Создаём кнопки
+# Кнопки
 keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="🎁 Повышенный приз", url="https://t.me/DosikGIFTS/11423")],
     [InlineKeyboardButton(text="⭐ Звезды от Досика", url="https://t.me/Dosik_stars_bot")],
@@ -29,7 +29,6 @@ keyboard = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="💬 Наш чатик", url="https://t.me/chatik_DOSIK")],
 ])
 
-# Ссылки на эмодзи и авки
 EMOJI_LINK = "https://t.me/addemoji/DOSIK_emoji"
 AVATAR_LINK = "https://t.me/EMOJI_DOSIK"
 
@@ -39,27 +38,25 @@ async def auto_comment(message: types.Message):
     if message.from_user.id == bot.id:
         return
     
-    # Если сообщение является ответом на другое сообщение - это комментарий, пропускаем
+    # Пропускаем комментарии (ответы на другие сообщения)
     if message.reply_to_message is not None:
         print(f"⏩ Пропустил комментарий от {message.from_user.first_name}")
         return
     
-    # Формируем текст со ссылками
     full_text = f"""{COMMENT_TEXT}
 
 [Эмодзи]({EMOJI_LINK}) и [авы]({AVATAR_LINK}) — подписывайтесь, чтобы не пропустить раздачи 🎀"""
     
-    # Отправляем ФОТО + текст + кнопки
+    # Отправляем фото в чат (НЕ ответом на сообщение)
     if PHOTO_INPUT:
-        await message.reply_photo(
+        await message.answer_photo(  # <-- ИСПРАВЛЕНО: answer_photo вместо reply_photo
             photo=PHOTO_INPUT,
             caption=full_text,
             parse_mode="Markdown",
             reply_markup=keyboard
         )
     else:
-        # Если фото не загрузилось, отправляем только текст
-        await message.reply(
+        await message.answer(
             full_text,
             parse_mode="Markdown",
             reply_markup=keyboard
