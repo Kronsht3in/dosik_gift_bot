@@ -8,7 +8,7 @@ COMMENT_TEXT = """Не забывайте комментить и ставить
 
 Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁 (+ повышенный приз)"""
 
-# Фото (файл image.jpg должен быть в репозитории)
+# Фото
 try:
     PHOTO = InputFile("image.jpg")
     print("✅ Фото успешно загружено")
@@ -29,7 +29,7 @@ keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 @dp.channel_post()
 async def auto_comment(message: types.Message):
-    # Пропускаем комментарии (ответы на другие сообщения)
+    # Пропускаем комментарии
     if message.reply_to_message is not None:
         print(f"⏩ Пропустил комментарий (ответ)")
         return
@@ -38,12 +38,12 @@ async def auto_comment(message: types.Message):
         await message.answer_photo(
             photo=PHOTO,
             caption=COMMENT_TEXT,
-            reply_markup=keyboard  # <-- убрал parse_mode
+            reply_markup=keyboard
         )
     else:
         await message.answer(
             COMMENT_TEXT,
-            reply_markup=keyboard  # <-- убрал parse_mode
+            reply_markup=keyboard
         )
     print(f"✅ Ответил на пост в канале")
 
