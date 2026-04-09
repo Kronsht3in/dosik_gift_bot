@@ -6,9 +6,9 @@ from aiogram.types import InputFile
 TOKEN = "8683122770:AAEUMZjVAbG2Ray3Fv4FHWOK8jn3WLtJrpA"
 COMMENT_TEXT = """Не забывайте комментить и ставить реакции, ведь так вы повышаете шанс забрать халявного мишку 🤍
 
-Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁"""
+Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁 (+ повышенный приз)"""
 
-# Загружаем фото (InputFile вместо BufferedInputFile - стабильнее)
+# Фото (файл image.jpg должен быть в репозитории)
 try:
     PHOTO = InputFile("image.jpg")
     print("✅ Фото успешно загружено")
@@ -21,41 +21,31 @@ dp = Dispatcher()
 
 # Кнопки
 keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="🎁 Повышенный приз", url="https://t.me/DosikGIFTS/11423")],
+    [InlineKeyboardButton(text="🎁 Наши эмодзи", url="https://t.me/addemoji/DOSIK_emoji")],
     [InlineKeyboardButton(text="⭐ Звезды от Досика", url="https://t.me/Dosik_stars_bot")],
     [InlineKeyboardButton(text="📺 Наш твич", url="https://www.twitch.tv/")],
     [InlineKeyboardButton(text="💬 Наш чатик", url="https://t.me/chatik_DOSIK")],
 ])
 
-EMOJI_LINK = "https://t.me/addemoji/DOSIK_emoji"
-AVATAR_LINK = "https://t.me/EMOJI_DOSIK"
-
-@dp.message()
+@dp.channel_post()
 async def auto_comment(message: types.Message):
-    # Не отвечаем сами себе
     if message.from_user.id == bot.id:
         return
     
-    # Пропускаем комментарии
     if message.reply_to_message is not None:
         print(f"⏩ Пропустил комментарий от {message.from_user.first_name}")
         return
     
-    full_text = f"""{COMMENT_TEXT}
-
-[Эмодзи]({EMOJI_LINK}) и [авы]({AVATAR_LINK}) — подписывайтесь, чтобы не пропустить раздачи 🎀"""
-    
-    # Отправляем с фото (если есть) или без
     if PHOTO:
         await message.answer_photo(
             photo=PHOTO,
-            caption=full_text,
+            caption=COMMENT_TEXT,
             parse_mode="Markdown",
             reply_markup=keyboard
         )
     else:
         await message.answer(
-            full_text,
+            COMMENT_TEXT,
             parse_mode="Markdown",
             reply_markup=keyboard
         )
@@ -63,7 +53,7 @@ async def auto_comment(message: types.Message):
 
 async def main():
     print("🚀 Бот запущен!")
-    print("📢 Отвечает только на новые посты (игнорирует комментарии)")
+    print("📢 Отвечает только на новые посты в КАНАЛЕ")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
