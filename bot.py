@@ -29,27 +29,28 @@ keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 @dp.channel_post()
 async def auto_comment(message: types.Message):
-    # Пропускаем комментарии
+    # Пропускаем комментарии (ответы на другие сообщения)
     if message.reply_to_message is not None:
         print(f"⏩ Пропустил комментарий (ответ)")
         return
     
     if PHOTO:
-        await message.answer_photo(
+        # reply_photo — отправляет как ответ на пост (комментарий)
+        await message.reply_photo(
             photo=PHOTO,
             caption=COMMENT_TEXT,
             reply_markup=keyboard
         )
     else:
-        await message.answer(
+        await message.reply(
             COMMENT_TEXT,
             reply_markup=keyboard
         )
-    print(f"✅ Ответил на пост в канале")
+    print(f"✅ Ответил комментарием на пост в канале")
 
 async def main():
     print("🚀 Бот запущен!")
-    print("📢 Отвечает только на новые посты в КАНАЛЕ")
+    print("📢 Отвечает комментарием под каждым новым постом в КАНАЛЕ")
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
