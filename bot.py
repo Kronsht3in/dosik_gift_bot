@@ -1,20 +1,11 @@
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.types import InputFile
 
 TOKEN = "8683122770:AAEUMZjVAbG2Ray3Fv4FHWOK8jn3WLtJrpA"
 COMMENT_TEXT = """Не забывайте комментить и ставить реакции, ведь так вы повышаете шанс забрать халявного мишку 🤍
 
 Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁 (+ повышенный приз)"""
-
-# Фото
-try:
-    PHOTO = InputFile("image.jpg")
-    print("✅ Фото успешно загружено")
-except Exception as e:
-    print(f"❌ Ошибка загрузки фото: {e}")
-    PHOTO = None
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
@@ -29,23 +20,14 @@ keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 @dp.channel_post()
 async def auto_comment(message: types.Message):
-    # Пропускаем комментарии (ответы на другие сообщения)
     if message.reply_to_message is not None:
         print(f"⏩ Пропустил комментарий (ответ)")
         return
     
-    if PHOTO:
-        # reply_photo — отправляет как ответ на пост (комментарий)
-        await message.reply_photo(
-            photo=PHOTO,
-            caption=COMMENT_TEXT,
-            reply_markup=keyboard
-        )
-    else:
-        await message.reply(
-            COMMENT_TEXT,
-            reply_markup=keyboard
-        )
+    await message.reply(
+        COMMENT_TEXT,
+        reply_markup=keyboard
+    )
     print(f"✅ Ответил комментарием на пост в канале")
 
 async def main():
