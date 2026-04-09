@@ -1,39 +1,31 @@
 import asyncio
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 TOKEN = "8683122770:AAEUMZjVAbG2Ray3Fv4FHWOK8jn3WLtJrpA"
-COMMENT_TEXT = """Не забывайте комментить и ставить реакции, ведь так вы повышаете шанс забрать халявного мишку 🤍
-
-Носителей наших эмодзи и авок частенько радуем подарочками с росписью 🎁 (+ повышенный приз)"""
+COMMENT_TEXT = "🔥 Спасибо за пост!"
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher()
 
-# Кнопки
-keyboard = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="🎁 Наши эмодзи", url="https://t.me/addemoji/DOSIK_emoji")],
-    [InlineKeyboardButton(text="⭐ Звезды от Досика", url="https://t.me/Dosik_stars_bot")],
-    [InlineKeyboardButton(text="📺 Наш твич", url="https://www.twitch.tv/")],
-    [InlineKeyboardButton(text="💬 Наш чатик", url="https://t.me/chatik_DOSIK")],
-])
-
-@dp.channel_post()
+@dp.message()
 async def auto_comment(message: types.Message):
-    if message.reply_to_message is not None:
-        print(f"⏩ Пропустил комментарий (ответ)")
+    # Не отвечаем сами себе
+    if message.from_user.id == bot.id:
         return
     
-    await message.reply(
-        COMMENT_TEXT,
-        reply_markup=keyboard
-    )
-    print(f"✅ Ответил комментарием на пост в канале")
+    # Если сообщение является ответом на другое сообщение - это комментарий, пропускаем
+    if message.reply_to_message is not None:
+        print(f"⏩ Пропустил комментарий от {message.from_user.first_name}")
+        return
+    
+    # Иначе - это новый пост, отвечаем
+    await message.reply(COMMENT_TEXT)
+    print(f"✅ Ответил на пост от {message.from_user.first_name}")
 
 async def main():
     print("🚀 Бот запущен!")
-    print("📢 Отвечает комментарием под каждым новым постом в КАНАЛЕ")
+    print("📢 Отвечает только на новые посты (игнорирует комментарии)")
     await dp.start_polling(bot)
 
-if __name__ == "__main__":
+if name == "main":
     asyncio.run(main())
