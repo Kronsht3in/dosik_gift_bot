@@ -29,11 +29,11 @@ keyboard = InlineKeyboardMarkup(inline_keyboard=[
 
 @dp.channel_post()
 async def auto_comment(message: types.Message):
-    if message.from_user.id == bot.id:
-        return
+    # Убрали проверку на bot.id (в канале нет from_user)
     
+    # Пропускаем комментарии (ответы на другие сообщения)
     if message.reply_to_message is not None:
-        print(f"⏩ Пропустил комментарий от {message.from_user.first_name}")
+        print(f"⏩ Пропустил комментарий (ответ)")
         return
     
     if PHOTO:
@@ -49,7 +49,7 @@ async def auto_comment(message: types.Message):
             parse_mode="Markdown",
             reply_markup=keyboard
         )
-    print(f"✅ Ответил на пост от {message.from_user.first_name}")
+    print(f"✅ Ответил на пост в канале")
 
 async def main():
     print("🚀 Бот запущен!")
